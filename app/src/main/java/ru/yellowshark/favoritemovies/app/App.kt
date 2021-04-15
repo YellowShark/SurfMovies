@@ -1,4 +1,4 @@
-package ru.yellowshark.favoritemovies
+package ru.yellowshark.favoritemovies.app
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
