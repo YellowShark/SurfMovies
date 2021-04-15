@@ -23,7 +23,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
-
     @Provides
     fun provideApi(retrofit: Retrofit) =
         retrofit.create(MovieApi::class.java)
@@ -86,5 +85,4 @@ class NetworkModule {
 
     @Provides
     fun provideGson() = Gson()
-
 }
