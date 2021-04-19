@@ -24,12 +24,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
     @Provides
-    fun provideApi(retrofit: Retrofit) =
+    fun provideApi(retrofit: Retrofit): MovieApi =
         retrofit.create(MovieApi::class.java)
 
     @Singleton
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson) =
+    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit =
         Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(BASE_URL)
@@ -41,7 +41,7 @@ class NetworkModule {
     fun provideClient(
         @ConnectivityInterceptor connectivityInterceptor: Interceptor,
         @ApiKeyInterceptor apiKeyInterceptor: Interceptor
-    ) =
+    ): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(connectivityInterceptor)
             .addInterceptor(apiKeyInterceptor)
@@ -71,7 +71,6 @@ class NetworkModule {
                 .url()
                 .newBuilder()
                 .addQueryParameter("api_key", API_KEY)
-                .addQueryParameter("language", BASE_LANGUAGE)
                 .build()
 
             val request = chain.request()
