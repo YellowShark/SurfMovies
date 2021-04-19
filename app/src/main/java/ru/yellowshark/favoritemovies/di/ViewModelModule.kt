@@ -10,7 +10,7 @@ import ru.yellowshark.favoritemovies.ui.home.HomeViewModel
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-class ViewModelModule {
+object ViewModelModule {
     @Provides
     fun provideHomeViewModel(repository: Repository): HomeViewModel {
         return HomeViewModel(repository);

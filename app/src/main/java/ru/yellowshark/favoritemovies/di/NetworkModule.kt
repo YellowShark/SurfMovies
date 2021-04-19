@@ -22,7 +22,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class NetworkModule {
+object NetworkModule {
     @Provides
     fun provideApi(retrofit: Retrofit): MovieApi =
         retrofit.create(MovieApi::class.java)

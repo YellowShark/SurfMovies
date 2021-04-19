@@ -1,4 +1,4 @@
 package ru.yellowshark.favoritemovies.di
 
-class LocalModule {
+object LocalModule {
 }
