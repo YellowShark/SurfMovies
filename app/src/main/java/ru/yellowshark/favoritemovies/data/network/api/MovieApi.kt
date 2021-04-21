@@ -8,12 +8,12 @@ import ru.yellowshark.favoritemovies.data.network.response.GenresResponse
 import ru.yellowshark.favoritemovies.data.network.response.SearchResponse
 
 interface MovieApi {
-    @GET("/3/discover/movie")
+    @GET("/3/discover")
     fun getMovies(): Observable<DiscoverResponse>
 
-    @GET("/3/search/search-movies")
+    @GET("search/search-movies")
     fun searchMovies(query: String): Single<SearchResponse>
 
-    @GET("/3/genres/get-movie-list")
+    @GET("genres/get-movie-list")
     fun getGenres(): Single<GenresResponse>
 }

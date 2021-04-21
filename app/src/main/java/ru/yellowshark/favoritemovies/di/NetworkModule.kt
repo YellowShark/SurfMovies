@@ -3,6 +3,7 @@ package ru.yellowshark.favoritemovies.di
 import android.content.Context
 import android.net.ConnectivityManager
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,9 +17,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.yellowshark.favoritemovies.data.network.api.MovieApi
 import ru.yellowshark.favoritemovies.domain.exception.NoConnectivityException
 import ru.yellowshark.favoritemovies.utils.API_KEY
-import ru.yellowshark.favoritemovies.utils.BASE_LANGUAGE
 import ru.yellowshark.favoritemovies.utils.BASE_URL
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -83,5 +84,7 @@ object NetworkModule {
     }
 
     @Provides
-    fun provideGson() = Gson()
+    fun provideGson(): Gson = GsonBuilder()
+        .setLenient()
+        .create()
 }

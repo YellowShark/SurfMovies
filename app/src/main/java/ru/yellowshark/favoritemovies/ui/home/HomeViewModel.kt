@@ -1,5 +1,6 @@
 package ru.yellowshark.favoritemovies.ui.home
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,14 +27,14 @@ class HomeViewModel @Inject constructor(
     fun getMovies() {
         disposables.add(repository.getMovies()
             .subscribeOn(Schedulers.io())
-            .take(20)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
                     _movies.postValue(it)
+                    Log.d("TAG", "getMovies: $it")
                 },
-                {
-                        t -> t.printStackTrace()
+                { t ->
+                    t.printStackTrace()
                 }
             )
         )
