@@ -61,11 +61,15 @@ dependencies {
     implementation 'com.google.dagger:hilt-android:2.33-beta'
     kapt 'com.google.dagger:hilt-compiler:2.33-beta'
 
-    //retrofit 2
-    def retrofit_version = "2.9.0"
+    //retrofit2
+    def retrofit_version = "2.3.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+
+    //okhttp3
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
 
     //RxJava2
     implementation 'io.reactivex.rxjava2:rxjava:2.2.2'

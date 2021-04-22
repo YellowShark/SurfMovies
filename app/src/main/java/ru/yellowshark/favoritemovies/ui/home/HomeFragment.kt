@@ -23,7 +23,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun observeViewModel() {
-        viewModel.getMovies()
         viewModel.movies.observe(requireActivity(), {
             val movies = it
             Log.d("TAG", "observeViewModel: $movies")

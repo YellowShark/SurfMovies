@@ -2,7 +2,9 @@ package ru.yellowshark.favoritemovies.data
 
 import io.reactivex.Observable
 import io.reactivex.Single
+import retrofit2.Response
 import ru.yellowshark.favoritemovies.data.network.api.MovieApi
+import ru.yellowshark.favoritemovies.data.network.response.DiscoverResponse
 import ru.yellowshark.favoritemovies.data.network.response.Genre
 import ru.yellowshark.favoritemovies.domain.Repository
 import ru.yellowshark.favoritemovies.domain.mapper.NetworkMapper
@@ -28,5 +30,4 @@ class RepositoryImpl @Inject constructor(
     override fun getGenres(): Single<List<Genre>> {
         return api.getGenres().map { it.genres }
     }
-
 }
