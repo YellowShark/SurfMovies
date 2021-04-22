@@ -31,7 +31,6 @@ class HomeViewModel @Inject constructor(
             .subscribe(
                 {
                     _movies.postValue(it)
-                    Log.d("TAG", "getMovies: $it")
                 },
                 { t ->
                     t.printStackTrace()
