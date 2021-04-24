@@ -6,5 +6,6 @@ class Movie(
     val genreIds: List<Int>,
     val image: String,
     val releaseDate: String,
-    val isAdult: Boolean
+    val isAdult: Boolean,
+    var isLiked: Boolean
 )

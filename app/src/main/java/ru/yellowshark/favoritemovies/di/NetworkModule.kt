@@ -18,6 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.yellowshark.favoritemovies.data.network.api.MovieApi
 import ru.yellowshark.favoritemovies.domain.exception.NoConnectivityException
 import ru.yellowshark.favoritemovies.utils.API_KEY
+import ru.yellowshark.favoritemovies.utils.BASE_LANGUAGE
 import ru.yellowshark.favoritemovies.utils.BASE_URL
 import javax.inject.Singleton
 
@@ -78,6 +79,7 @@ object NetworkModule {
                 .url()
                 .newBuilder()
                 .addQueryParameter("api_key", API_KEY)
+                .addQueryParameter("language", BASE_LANGUAGE)
                 .build()
 
             val request = chain.request()

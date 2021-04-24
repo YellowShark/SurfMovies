@@ -12,7 +12,8 @@ class NetworkMapper : Mapper<MovieResult, Movie> {
             image = dto.posterPath as String,
             isAdult = dto.adult,
             releaseDate = dto.releaseDate,
-            genreIds = dto.genreIds
+            genreIds = dto.genreIds,
+            isLiked = false
         )
 
     override fun fromDomain(domain: Movie): MovieResult {

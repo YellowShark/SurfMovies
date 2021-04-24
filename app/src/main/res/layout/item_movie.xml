@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
     android:background="@color/white"
-    app:cardCornerRadius="4dp"
-    android:layout_marginBottom="8dp">
+    app:cardCornerRadius="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,10 +14,12 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/movie_poster_iv"
             android:layout_width="0dp"
             android:layout_height="190dp"
             android:layout_weight="1"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:srcCompat="@tools:sample/avatars"
+            android:layout_marginStart="-4dp"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
@@ -38,9 +40,11 @@
             <TextView
                 android:id="@+id/movie_desc_tv"
                 android:layout_width="200dp"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:maxLines="3"
                 android:textSize="14sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/movie_title_tv"
@@ -50,12 +54,12 @@
                 android:id="@+id/movie_info_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
+                android:layout_marginBottom="16dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginBottom="16dp">
+                app:layout_constraintRight_toRightOf="parent">
 
                 <ImageView
                     android:id="@+id/movie_calendar_iv"
@@ -79,8 +83,9 @@
 
                 <ImageView
                     android:id="@+id/movie_like_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="8dp"
                     android:layout_gravity="end"
                     android:layout_marginEnd="18dp"
                     android:clickable="true"
