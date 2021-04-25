@@ -24,7 +24,7 @@ class RepositoryImpl @Inject constructor(
 
     override fun searchMovies(query: String): Single<List<Movie>> {
         return api.searchMovies(query)
-            .map { response -> response.movieResults.map { networkMapper.toDomain(it) } }
+            .map { response -> response.results.map { networkMapper.toDomain(it) } }
     }
 
     override fun getGenres(): Single<List<Genre>> {

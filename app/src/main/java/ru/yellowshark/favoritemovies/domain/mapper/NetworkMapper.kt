@@ -9,7 +9,7 @@ class NetworkMapper : Mapper<MovieResult, Movie> {
         Movie(
             title = dto.title,
             desc = dto.overview,
-            image = dto.posterPath as String,
+            image = dto.posterPath ?: "",
             isAdult = dto.adult,
             releaseDate = dto.releaseDate,
             genreIds = dto.genreIds,
