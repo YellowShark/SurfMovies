@@ -1,15 +1,11 @@
 package ru.yellowshark.favoritemovies.ui.home
 
-import android.util.Log
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import ru.yellowshark.favoritemovies.domain.Repository
 import ru.yellowshark.favoritemovies.domain.exception.NoResultsException
@@ -22,6 +18,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
+
     private val disposables = CompositeDisposable()
     private val _movies = MutableLiveData<ViewState<List<Movie>>>()
     val movies: LiveData<ViewState<List<Movie>>>
@@ -53,16 +50,14 @@ class HomeViewModel @Inject constructor(
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe { _movies.postValue(ViewState.Loading()) }
+                    .doOnSuccess { if (it.isEmpty()) throw NoResultsException() }
                     .delay(300, TimeUnit.MILLISECONDS)
                     .subscribe({ onSuccess(it) }, { t -> onError(t) })
             )
     }
 
     private fun onSuccess(movies: List<Movie>) {
-        if (movies.isNotEmpty())
-            _movies.postValue(ViewState.Success(movies))
-        else
-            throw NoResultsException()
+        _movies.postValue(ViewState.Success(movies))
     }
 
     private fun onError(t: Throwable) {

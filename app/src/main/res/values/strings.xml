@@ -2,4 +2,6 @@
     <string name="app_name">Favorite Movies</string>
     <string name="search_hint">Поиск по названию фильма</string>
     <string name="unknown_error">Нам не удалось обработать\n ваш запрос. Попробуйте ещё раз</string>
+    <string name="error_no_internet">Проверьте ваше соединение с интернетом и попробуйте ещё раз</string>
+    <string name="no_results_message">По запросу \"%1$s\" ничего не найдено</string>
 </resources>

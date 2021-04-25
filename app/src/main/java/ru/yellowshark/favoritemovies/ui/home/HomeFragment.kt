@@ -10,13 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yellowshark.favoritemovies.R
 import ru.yellowshark.favoritemovies.databinding.FragmentHomeBinding
 import ru.yellowshark.favoritemovies.domain.exception.NoConnectivityException
 import ru.yellowshark.favoritemovies.domain.exception.NoResultsException
 import ru.yellowshark.favoritemovies.domain.model.Movie
-import ru.yellowshark.favoritemovies.ui.base.ViewState
 import ru.yellowshark.favoritemovies.ui.base.ViewState.*
 import ru.yellowshark.favoritemovies.utils.hideKeyboard
 
@@ -45,11 +45,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
 
     private fun observeViewModel() {
         viewModel.movies.observe(requireActivity(), { state ->
-            when(state) {
+            when (state) {
                 is Loading -> { showLoading() }
                 is Success -> { showData(state.data) }
                 is Error -> {
-                    when(state.throwable) {
+                    when (state.throwable) {
                         is NoResultsException -> { showNoResults() }
                         is NoConnectivityException -> { showNoInternet() }
                         else -> { showError() }
@@ -61,26 +61,45 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
 
     private fun showLoading() {
         with(binding) {
-            homeProgressBarWrapper.isVisible = true
             homeMoviesRv.isVisible = false
+            homeProgressBarWrapper.isVisible = true
+            homeErrorWrapper.isVisible = false
+            homeNoResultsWrapper.isVisible = false
         }
     }
 
     private fun showData(data: List<Movie>) {
         adapter.movies = data
         with(binding) {
-            homeProgressBarWrapper.isVisible = false
             homeMoviesRv.isVisible = true
+            homeProgressBarWrapper.isVisible = false
+            homeErrorWrapper.isVisible = false
+            homeNoResultsWrapper.isVisible = false
         }
     }
 
     private fun showNoResults() {
+        with(binding) {
+            homeMoviesRv.isVisible = false
+            homeProgressBarWrapper.isVisible = false
+            homeErrorWrapper.isVisible = false
+            homeNoResultsWrapper.isVisible = true
+            homeNoResultsTv.text = String.format(getString(R.string.no_results_message), homeSearchEt.text.toString())
+        }
     }
 
     private fun showNoInternet() {
+        Snackbar.make(binding.root, getString(R.string.error_no_internet), Snackbar.LENGTH_SHORT)
+            .show()
     }
 
     private fun showError() {
+        with(binding) {
+            homeMoviesRv.isVisible = false
+            homeProgressBarWrapper.isVisible = false
+            homeErrorWrapper.isVisible = true
+            homeNoResultsWrapper.isVisible = false
+        }
     }
 
     private fun initRecyclerView() {
@@ -112,9 +131,9 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
         }
     }
 
-    fun removeFocus() {
+    private fun removeFocus() {
         with(binding) {
-            homeSearchEt.isFocusable = false
+            homeSearchEt.clearFocus()
             requireContext().hideKeyboard(root)
         }
     }

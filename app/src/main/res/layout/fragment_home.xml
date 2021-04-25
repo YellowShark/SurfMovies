@@ -51,7 +51,7 @@
             android:id="@+id/home_progressBarWrapper"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <ProgressBar
                 android:layout_width="wrap_content"
@@ -74,6 +74,7 @@
                 android:src="@drawable/ic_big_search" />
 
             <TextView
+                android:id="@+id/home_noResults_tv"
                 android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="30dp"
