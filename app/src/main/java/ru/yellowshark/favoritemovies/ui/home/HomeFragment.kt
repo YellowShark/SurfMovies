@@ -114,6 +114,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
 
     private fun initListeners() {
         with(binding) {
+            homeRefreshIv.setOnClickListener { viewModel.getMovies() }
             homeRefresher.setOnRefreshListener(this@HomeFragment)
             homeSearchEt.setOnEditorActionListener(TextView.OnEditorActionListener { _: TextView, _: Int, event: KeyEvent? ->
                 if (event != null) {
