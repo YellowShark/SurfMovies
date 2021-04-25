@@ -1,29 +1,30 @@
 package ru.yellowshark.favoritemovies.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.yellowshark.favoritemovies.R
 import ru.yellowshark.favoritemovies.databinding.FragmentHomeBinding
+import ru.yellowshark.favoritemovies.domain.exception.NoConnectivityException
+import ru.yellowshark.favoritemovies.domain.exception.NoResultsException
 import ru.yellowshark.favoritemovies.domain.model.Movie
+import ru.yellowshark.favoritemovies.ui.base.ViewState
+import ru.yellowshark.favoritemovies.ui.base.ViewState.*
 import ru.yellowshark.favoritemovies.utils.hideKeyboard
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefreshListener {
     private val binding by viewBinding(FragmentHomeBinding::bind)
     private lateinit var adapter: MovieAdapter
-
-    @Inject
-    lateinit var viewModel: HomeViewModel
+    private val viewModel by lazy { ViewModelProvider(requireActivity()).get(HomeViewModel::class.java) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,9 +36,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
     override fun onRefresh() {
         with(binding) {
             homeRefresher.isRefreshing = false
-            homeSearchEt.apply {
-                setText("")
-            }
+            homeSearchEt.setText("")
             removeFocus()
             viewModel.getMovies()
         }
@@ -45,9 +44,43 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
 
 
     private fun observeViewModel() {
-        viewModel.movies.observe(requireActivity(), {
-            adapter.movies = it
+        viewModel.movies.observe(requireActivity(), { state ->
+            when(state) {
+                is Loading -> { showLoading() }
+                is Success -> { showData(state.data) }
+                is Error -> {
+                    when(state.throwable) {
+                        is NoResultsException -> { showNoResults() }
+                        is NoConnectivityException -> { showNoInternet() }
+                        else -> { showError() }
+                    }
+                }
+            }
         })
+    }
+
+    private fun showLoading() {
+        with(binding) {
+            homeProgressBarWrapper.isVisible = true
+            homeMoviesRv.isVisible = false
+        }
+    }
+
+    private fun showData(data: List<Movie>) {
+        adapter.movies = data
+        with(binding) {
+            homeProgressBarWrapper.isVisible = false
+            homeMoviesRv.isVisible = true
+        }
+    }
+
+    private fun showNoResults() {
+    }
+
+    private fun showNoInternet() {
+    }
+
+    private fun showError() {
     }
 
     private fun initRecyclerView() {
