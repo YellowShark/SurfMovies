@@ -23,6 +23,7 @@ class HomeViewModel @Inject constructor(
     private val _movies = MutableLiveData<ViewState<List<Movie>>>()
     val movies: LiveData<ViewState<List<Movie>>>
         get() = _movies
+    var currentVisiblePosition = MutableLiveData(0)
 
     init {
         getMovies()

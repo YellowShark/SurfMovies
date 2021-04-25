@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
@@ -20,6 +21,7 @@ import ru.yellowshark.favoritemovies.domain.model.Movie
 import ru.yellowshark.favoritemovies.ui.base.ViewState.*
 import ru.yellowshark.favoritemovies.utils.hideKeyboard
 
+
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefreshListener {
     private val binding by viewBinding(FragmentHomeBinding::bind)
@@ -31,6 +33,19 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
         initRecyclerView()
         observeViewModel()
         initListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (binding.homeMoviesRv.layoutManager as LinearLayoutManager).scrollToPosition(viewModel.currentVisiblePosition.value!!)
+        viewModel.currentVisiblePosition.value = 0
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.currentVisiblePosition.value = 0
+        viewModel.currentVisiblePosition.value =
+            (binding.homeMoviesRv.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
     }
 
     override fun onRefresh() {
@@ -46,13 +61,23 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
     private fun observeViewModel() {
         viewModel.movies.observe(requireActivity(), { state ->
             when (state) {
-                is Loading -> { showLoading() }
-                is Success -> { showData(state.data) }
+                is Loading -> {
+                    showLoading()
+                }
+                is Success -> {
+                    showData(state.data)
+                }
                 is Error -> {
                     when (state.throwable) {
-                        is NoResultsException -> { showNoResults() }
-                        is NoConnectivityException -> { showNoInternet() }
-                        else -> { showError() }
+                        is NoResultsException -> {
+                            showNoResults()
+                        }
+                        is NoConnectivityException -> {
+                            showNoInternet()
+                        }
+                        else -> {
+                            showError()
+                        }
                     }
                 }
             }
@@ -84,7 +109,10 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
             homeProgressBarWrapper.isVisible = false
             homeErrorWrapper.isVisible = false
             homeNoResultsWrapper.isVisible = true
-            homeNoResultsTv.text = String.format(getString(R.string.no_results_message), homeSearchEt.text.toString())
+            homeNoResultsTv.text = String.format(
+                getString(R.string.no_results_message),
+                homeSearchEt.text.toString()
+            )
         }
     }
 
