@@ -37,14 +37,14 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
 
     override fun onResume() {
         super.onResume()
-        (binding.homeMoviesRv.layoutManager as LinearLayoutManager).scrollToPosition(viewModel.currentVisiblePosition.value!!)
-        viewModel.currentVisiblePosition.value = 0
+        (binding.homeMoviesRv.layoutManager as LinearLayoutManager).scrollToPosition(viewModel.currentVisiblePosition)
+        viewModel.currentVisiblePosition = 0
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.currentVisiblePosition.value = 0
-        viewModel.currentVisiblePosition.value =
+        viewModel.currentVisiblePosition = 0
+        viewModel.currentVisiblePosition =
             (binding.homeMoviesRv.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
     }
 
