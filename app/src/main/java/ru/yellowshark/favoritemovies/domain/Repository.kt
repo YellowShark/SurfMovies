@@ -11,6 +11,4 @@ interface Repository {
     fun getMovies(): Observable<List<Movie>>
 
     fun searchMovies(query: String): Single<List<Movie>>
-
-    fun getGenres(): Single<List<Genre>>
 }

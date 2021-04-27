@@ -7,12 +7,11 @@ import ru.yellowshark.favoritemovies.utils.Mapper
 class NetworkMapper : Mapper<MovieResult, Movie> {
     override fun toDomain(dto: MovieResult) =
         Movie(
+            id = dto.id,
             title = dto.title,
             desc = dto.overview,
             image = dto.posterPath ?: "",
-            isAdult = dto.adult,
             releaseDate = dto.releaseDate,
-            genreIds = dto.genreIds,
             isLiked = false
         )
 

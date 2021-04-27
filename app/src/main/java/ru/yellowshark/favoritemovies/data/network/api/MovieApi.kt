@@ -14,7 +14,4 @@ interface MovieApi {
 
     @GET("3/search/movie")
     fun searchMovies(@Query("query") query: String): Single<SearchResponse>
-
-    @GET("3/genres/get-movie-list")
-    fun getGenres(): Single<GenresResponse>
 }
