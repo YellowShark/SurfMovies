@@ -1,5 +1,6 @@
 package ru.yellowshark.favoritemovies.ui.home
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,6 +21,8 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
+        /*private const val MSG_SUCCESS_FAVORITE = "Добавлено в избранное!"
+        private const val MSG_ERROR_FAVORITE = "Не удалось добавить в избранное. Попробуйте ещё раз"*/
         private const val DELAY = 400L
         const val MIN_PROGRESS = 0
         const val MIN_LIST_POSITION = 0
@@ -27,8 +30,11 @@ class HomeViewModel @Inject constructor(
 
     private val disposables = CompositeDisposable()
     private val _movies = MutableLiveData<ViewState<List<Movie>>>()
+    //private val _message = MutableLiveData<String>()
     val movies: LiveData<ViewState<List<Movie>>>
         get() = _movies
+    /*val message: LiveData<String>
+        get() = _message*/
     var currentVisiblePosition = MIN_LIST_POSITION
     var progressStatus = MIN_PROGRESS
 
@@ -43,11 +49,14 @@ class HomeViewModel @Inject constructor(
         super.onCleared()
     }
 
+    fun updateMovie(movie: Movie) {
+        repository.updateMovie(movie)
+    }
+
     fun getMovies() {
         disposables.add(repository.getMovies()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { onLoading() }
+            .filter { it.isNotEmpty() }
             .delay(DELAY, TimeUnit.MILLISECONDS)
             .subscribe({ onSuccess(it) }, { t -> onError(t) })
         )

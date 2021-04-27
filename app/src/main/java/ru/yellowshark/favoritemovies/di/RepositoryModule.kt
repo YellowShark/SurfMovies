@@ -9,6 +9,7 @@ import ru.yellowshark.favoritemovies.data.db.dao.MovieDao
 import ru.yellowshark.favoritemovies.data.network.api.MovieApi
 import ru.yellowshark.favoritemovies.domain.Repository
 import ru.yellowshark.favoritemovies.domain.mapper.LocalMapper
+import ru.yellowshark.favoritemovies.domain.mapper.LocalSearchMapper
 import ru.yellowshark.favoritemovies.domain.mapper.NetworkMapper
 import javax.inject.Singleton
 
@@ -21,9 +22,10 @@ object RepositoryModule {
         api: MovieApi,
         dao: MovieDao,
         networkMapper: NetworkMapper,
-        localMapper: LocalMapper
+        localMapper: LocalMapper,
+        localSearchMapper: LocalSearchMapper
     ): Repository {
-        return RepositoryImpl(api, dao, networkMapper, localMapper)
+        return RepositoryImpl(api, dao, networkMapper, localMapper, localSearchMapper)
     }
 
     @Provides
@@ -31,4 +33,7 @@ object RepositoryModule {
 
     @Provides
     fun provideLocalMapper() = LocalMapper()
+
+    @Provides
+    fun provideLocalSearchMapper() = LocalSearchMapper()
 }

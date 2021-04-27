@@ -6,5 +6,5 @@ class Movie(
     val desc: String,
     val image: String,
     val releaseDate: String,
-    var isLiked: Boolean
+    var isLiked: Boolean,
 )

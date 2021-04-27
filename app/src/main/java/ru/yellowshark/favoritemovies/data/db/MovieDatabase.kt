@@ -6,10 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import ru.yellowshark.favoritemovies.data.db.dao.MovieDao
 import ru.yellowshark.favoritemovies.data.db.entity.MovieEntity
+import ru.yellowshark.favoritemovies.data.db.entity.SearchedMovieEntity
 
 const val DB_NAME = "movies.db"
 
-@Database(entities = [MovieEntity::class], version = 1)
+@Database(entities = [MovieEntity::class, SearchedMovieEntity::class], version = 2)
 abstract class MovieDatabase : RoomDatabase() {
     companion object {
         @Volatile

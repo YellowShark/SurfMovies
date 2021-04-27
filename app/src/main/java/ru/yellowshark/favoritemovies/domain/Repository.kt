@@ -1,5 +1,6 @@
 package ru.yellowshark.favoritemovies.domain
 
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.Response
@@ -11,4 +12,6 @@ interface Repository {
     fun getMovies(): Observable<List<Movie>>
 
     fun searchMovies(query: String): Single<List<Movie>>
+
+    fun updateMovie(movie: Movie)
 }

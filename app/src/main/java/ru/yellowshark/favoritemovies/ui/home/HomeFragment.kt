@@ -78,29 +78,35 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
 
 
     private fun observeViewModel() {
-        viewModel.movies.observe(requireActivity(), { state ->
-            when (state) {
-                is Loading -> {
-                    showLoading()
-                }
-                is Success -> {
-                    showData(state.data)
-                }
-                is Error -> {
-                    when (state.throwable) {
-                        is NoResultsException -> {
-                            showNoResults()
-                        }
-                        is NoConnectivityException -> {
-                            showNoInternet()
-                        }
-                        else -> {
-                            showError()
+        with(viewModel) {
+            /*message.observe(requireActivity(), {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            })*/
+
+            movies.observe(requireActivity(), { state ->
+                when (state) {
+                    is Loading -> {
+                        showLoading()
+                    }
+                    is Success -> {
+                        showData(state.data)
+                    }
+                    is Error -> {
+                        when (state.throwable) {
+                            is NoResultsException -> {
+                                showNoResults()
+                            }
+                            is NoConnectivityException -> {
+                                showNoInternet()
+                            }
+                            else -> {
+                                showError()
+                            }
                         }
                     }
                 }
-            }
-        })
+            })
+        }
     }
 
     private fun showLoading() {
@@ -162,7 +168,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
             Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
         }, onLikeClickListener = { movie: Movie, pos: Int ->
             adapter.updateLike(pos, movie.isLiked)
-            //save result local
+            viewModel.updateMovie(movie)
         })
         binding.homeMoviesRv.adapter = adapter
     }
