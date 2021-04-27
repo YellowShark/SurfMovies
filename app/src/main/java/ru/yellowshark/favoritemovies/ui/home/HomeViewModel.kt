@@ -21,8 +21,8 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-        /*private const val MSG_SUCCESS_FAVORITE = "Добавлено в избранное!"
-        private const val MSG_ERROR_FAVORITE = "Не удалось добавить в избранное. Попробуйте ещё раз"*/
+        private const val MSG_SUCCESS_FAVORITE = "Результат сохранён!"
+        private const val MSG_ERROR_FAVORITE = "Не удалось добавить в избранное. Попробуйте ещё раз"
         private const val DELAY = 400L
         const val MIN_PROGRESS = 0
         const val MIN_LIST_POSITION = 0
@@ -30,11 +30,13 @@ class HomeViewModel @Inject constructor(
 
     private val disposables = CompositeDisposable()
     private val _movies = MutableLiveData<ViewState<List<Movie>>>()
-    //private val _message = MutableLiveData<String>()
+
+    private val _message = MutableLiveData<String>()
     val movies: LiveData<ViewState<List<Movie>>>
         get() = _movies
-    /*val message: LiveData<String>
-        get() = _message*/
+
+    val message: LiveData<String>
+        get() = _message
     var currentVisiblePosition = MIN_LIST_POSITION
     var progressStatus = MIN_PROGRESS
 
@@ -50,7 +52,13 @@ class HomeViewModel @Inject constructor(
     }
 
     fun updateMovie(movie: Movie) {
-        repository.updateMovie(movie)
+        disposables.add(
+            repository.updateMovie(movie)
+                .subscribe(
+                    { _message.postValue(MSG_SUCCESS_FAVORITE) },
+                    { _message.postValue(MSG_ERROR_FAVORITE) }
+                )
+        )
     }
 
     fun getMovies() {
@@ -69,7 +77,7 @@ class HomeViewModel @Inject constructor(
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe { onLoading() }
-                    .doOnSuccess { if (it.isEmpty()) throw NoResultsException() }
+                    .doOnNext { if (it.isEmpty()) throw NoResultsException() }
                     .delay(DELAY, TimeUnit.MILLISECONDS)
                     .subscribe({ onSuccess(it) }, { t -> onError(t) })
             )

@@ -13,5 +13,5 @@ interface MovieApi {
     fun getMovies(): Observable<DiscoverResponse>
 
     @GET("3/search/movie")
-    fun searchMovies(@Query("query") query: String): Single<SearchResponse>
+    fun searchMovies(@Query("query") query: String): Observable<SearchResponse>
 }

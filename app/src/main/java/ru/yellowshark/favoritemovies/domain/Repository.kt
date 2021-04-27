@@ -11,7 +11,7 @@ import ru.yellowshark.favoritemovies.domain.model.Movie
 interface Repository {
     fun getMovies(): Observable<List<Movie>>
 
-    fun searchMovies(query: String): Single<List<Movie>>
+    fun searchMovies(query: String): Observable<List<Movie>>
 
-    fun updateMovie(movie: Movie)
+    fun updateMovie(movie: Movie): Completable
 }

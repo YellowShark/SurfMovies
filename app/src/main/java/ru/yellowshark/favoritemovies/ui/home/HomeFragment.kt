@@ -79,9 +79,9 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
 
     private fun observeViewModel() {
         with(viewModel) {
-            /*message.observe(requireActivity(), {
+            message.observe(requireActivity(), {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-            })*/
+            })
 
             movies.observe(requireActivity(), { state ->
                 when (state) {

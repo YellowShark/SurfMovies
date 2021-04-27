@@ -1,7 +1,6 @@
 package ru.yellowshark.favoritemovies.data
 
 import android.annotation.SuppressLint
-import android.util.Log
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
@@ -54,37 +53,46 @@ class RepositoryImpl @Inject constructor(
             .subscribe()
     }
 
-    override fun searchMovies(query: String): Single<List<Movie>> {
-        searchMoviesInNet(query)
-        return dao.getMoviesByTitle("%$query%")
-            .map { it.map { movieEntity -> localMapper.toDomain(movieEntity) } }
+    override fun searchMovies(query: String): Observable<List<Movie>> {
+        val localSearch = dao.getMoviesByTitle("%$query%")
+            .map { it.map { movieEntity -> localSearchMapper.toDomain(movieEntity) } }
+            .subscribeOn(Schedulers.computation())
+
+        val remoteSearch = api.searchMovies(query)
+            .map {
+                saveSearchMovies(it.results.map { movieResult ->
+                    networkMapper.toDomain(movieResult)
+                })
+                it.results.map { dto ->
+                    networkMapper.toDomain(dto)
+                }
+            }
+            .subscribeOn(Schedulers.io())
+
+        return localSearch.zipWith(
+            remoteSearch,
+            BiFunction { localResult, remoteResult ->
+                return@BiFunction if (localResult.isEmpty()) remoteResult
+                else localResult
+            })
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun updateMovie(movie: Movie) {
-        dao.updateMovie(localMapper.fromDomain(movie))
+    private fun saveSearchMovies(list: List<Movie>) {
+        dao.insertSearchMovies(list.map { localSearchMapper.fromDomain(it) })
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .subscribe()
-
-        dao.updateSearchedMovie(localSearchMapper.fromDomain(movie))
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .subscribe()
     }
 
-    @SuppressLint("CheckResult")
-    private fun searchMoviesInNet(query: String) {
-        api.searchMovies(query)
+    override fun updateMovie(movie: Movie): Completable {
+        val firstTableCompletable = dao.updateMovie(localMapper.fromDomain(movie))
             .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .subscribe(
-                {
-                    saveMoviesInDb(it.results.map { movieResult ->
-                        networkMapper.toDomain(
-                            movieResult
-                        )
-                    })
-                }, { it.printStackTrace() }
-            )
+
+        val secondTableCompletable = dao.updateSearchedMovie(localSearchMapper.fromDomain(movie))
+            .subscribeOn(Schedulers.io())
+
+        return firstTableCompletable.ambWith(secondTableCompletable)
+            .observeOn(AndroidSchedulers.mainThread())
     }
 }

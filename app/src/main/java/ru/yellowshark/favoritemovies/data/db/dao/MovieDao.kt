@@ -16,11 +16,14 @@ interface MovieDao {
     fun getMovies(): Observable<List<MovieEntity>>
 
     @Query("SELECT * FROM table_searched_movie WHERE title LIKE :title")
-    fun getMoviesByTitle(title: String): Single<List<MovieEntity>>
+    fun getMoviesByTitle(title: String): Observable<List<SearchedMovieEntity>>
 
     @Update
     fun updateMovie(movieEntity: MovieEntity): Completable
 
     @Update
     fun updateSearchedMovie(movieEntity: SearchedMovieEntity): Completable
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertSearchMovies(movieEntities: List<SearchedMovieEntity>): Completable
 }
