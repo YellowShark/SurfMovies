@@ -3,8 +3,9 @@ package ru.yellowshark.favoritemovies.data.db.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import ru.yellowshark.favoritemovies.data.db.TABLE_SEARCHED_MOVIES
 
-@Entity(tableName = "table_searched_movie")
+@Entity(tableName = TABLE_SEARCHED_MOVIES)
 data class SearchedMovieEntity(
     @PrimaryKey
     var id: Int,

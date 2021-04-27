@@ -1,6 +1,5 @@
 package ru.yellowshark.favoritemovies.domain.mapper
 
-import ru.yellowshark.favoritemovies.data.db.entity.MovieEntity
 import ru.yellowshark.favoritemovies.data.db.entity.SearchedMovieEntity
 import ru.yellowshark.favoritemovies.domain.model.Movie
 import ru.yellowshark.favoritemovies.utils.Mapper

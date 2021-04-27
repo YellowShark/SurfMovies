@@ -1,6 +1,5 @@
 package ru.yellowshark.favoritemovies.data
 
-import android.annotation.SuppressLint
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
@@ -46,13 +45,6 @@ class RepositoryImpl @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    private fun saveMoviesInDb(list: List<Movie>) {
-        dao.insertMovies(list.map { localMapper.fromDomain(it) })
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
-            .subscribe()
-    }
-
     override fun searchMovies(query: String): Observable<List<Movie>> {
         val localSearch = dao.getMoviesByTitle("%$query%")
             .map { it.map { movieEntity -> localSearchMapper.toDomain(movieEntity) } }
@@ -94,5 +86,12 @@ class RepositoryImpl @Inject constructor(
 
         return firstTableCompletable.ambWith(secondTableCompletable)
             .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    private fun saveMoviesInDb(list: List<Movie>) {
+        dao.insertMovies(list.map { localMapper.fromDomain(it) })
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe()
     }
 }

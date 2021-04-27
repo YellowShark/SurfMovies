@@ -9,6 +9,8 @@ import ru.yellowshark.favoritemovies.data.db.entity.MovieEntity
 import ru.yellowshark.favoritemovies.data.db.entity.SearchedMovieEntity
 
 const val DB_NAME = "movies.db"
+const val TABLE_LOCAL_MOVIES = "table_local_movies"
+const val TABLE_SEARCHED_MOVIES = "table_searched_movie"
 
 @Database(entities = [MovieEntity::class, SearchedMovieEntity::class], version = 2)
 abstract class MovieDatabase : RoomDatabase() {
