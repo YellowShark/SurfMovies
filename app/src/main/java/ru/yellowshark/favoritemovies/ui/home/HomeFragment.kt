@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -37,7 +39,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
 
     private lateinit var task: Runnable
     private lateinit var executorService: ExecutorService
-    private val binding by viewBinding(FragmentHomeBinding::bind)
+    private lateinit var binding: FragmentHomeBinding
     private lateinit var adapter: MovieAdapter
     private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
     private val viewModel by lazy { ViewModelProvider(requireActivity()).get(HomeViewModel::class.java) }
@@ -47,8 +49,18 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
         executorService = Executors.newFixedThreadPool(1)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initTask()
         initRecyclerView()
         observeViewModel()
         initListeners()
@@ -62,6 +74,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
 
     override fun onPause() {
         super.onPause()
+        executorService.shutdownNow()
+        handler.removeCallbacks(task)
         viewModel.currentVisiblePosition = HomeViewModel.MIN_LIST_POSITION
         viewModel.currentVisiblePosition =
             (binding.homeMoviesRv.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
@@ -76,6 +90,23 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
         }
     }
 
+    private fun initTask() {
+        with(viewModel) {
+            task = Runnable {
+                while (progressStatus < FINAL_VALUE) {
+                    progressStatus += STEP
+                    handler.post {
+                        binding.homeHorizontalPb.progress = progressStatus
+                    }
+                    try {
+                        Thread.sleep(DELAY)
+                    } catch (e: InterruptedException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+    }
 
     private fun observeViewModel() {
         with(viewModel) {
@@ -205,22 +236,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
 
     private fun startLoading() {
         executorService = Executors.newFixedThreadPool(1)
-        with(viewModel) {
-            task = Runnable {
-                while (progressStatus < FINAL_VALUE) {
-                    progressStatus += STEP
-                    handler.post {
-                        binding.homeHorizontalPb.progress = progressStatus
-                    }
-                    try {
-                        Thread.sleep(DELAY)
-                    } catch (e: InterruptedException) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-            executorService.execute(task)
-        }
+        executorService.execute(task)
     }
 
     private fun removeFocus() {
