@@ -23,7 +23,7 @@ object RepositoryModule {
         networkMapper: NetworkMapper,
         localMapper: LocalMapper
     ): Repository {
-        return RepositoryImpl(api, dao, networkMapper)
+        return RepositoryImpl(api, dao, networkMapper, localMapper)
     }
 
     @Provides
