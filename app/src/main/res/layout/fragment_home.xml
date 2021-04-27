@@ -30,6 +30,8 @@
                 android:layout_marginBottom="4dp"
                 android:background="@drawable/bg_et_search"
                 android:hint="@string/search_hint"
+                android:textColorHint="@color/gray"
+                android:textColor="@color/black"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:textCursorDrawable="@drawable/cursor_drawable" />
