@@ -42,6 +42,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
     private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
     private val viewModel by lazy { ViewModelProvider(requireActivity()).get(HomeViewModel::class.java) }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        executorService = Executors.newFixedThreadPool(1)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
@@ -156,7 +161,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), SwipeRefreshLayout.OnRefr
         adapter = MovieAdapter(onItemClickListener = {
             Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
         }, onLikeClickListener = { movie: Movie, pos: Int ->
-            adapter.updateLike(pos)
+            adapter.updateLike(pos, movie.isLiked)
             //save result local
         })
         binding.homeMoviesRv.adapter = adapter

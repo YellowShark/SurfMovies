@@ -23,9 +23,8 @@ class MovieAdapter(
 
     override fun getItemCount() = movies.size
 
-    fun updateLike(pos: Int) {
-        val isLiked = movies[pos].isLiked
-        movies[pos].isLiked = !isLiked
+    fun updateLike(pos: Int, isLiked: Boolean) {
+        movies[pos].isLiked = isLiked
         notifyItemChanged(pos)
     }
 }

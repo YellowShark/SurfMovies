@@ -38,18 +38,20 @@ class MovieViewHolder(
             movieTitleTv.text = movie.title
             movieDateTv.text = movie.releaseDate
             movieDescTv.text = movie.desc
+            movieLikeBtn.setImageDrawable(
+                ContextCompat.getDrawable(
+                    root.context,
+                    if (!movie.isLiked) R.drawable.ic_heart
+                    else
+                        R.drawable.ic_heart_fill
+                )
+            )
 
             root.setOnClickListener { onItemClickListener(movie) }
             movieLikeBtn.setOnClickListener {
+                val isLiked = movie.isLiked
+                movie.isLiked = !isLiked
                 onLikeClickListener(movie, position)
-                movieLikeBtn.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        root.context,
-                        if (movie.isLiked) R.drawable.ic_heart
-                        else
-                            R.drawable.ic_heart_fill
-                    )
-                )
             }
         }
     }
