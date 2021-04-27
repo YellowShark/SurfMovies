@@ -19,11 +19,18 @@ class HomeViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
+    companion object {
+        private const val DELAY = 400L
+        const val MIN_PROGRESS = 0
+        const val MIN_LIST_POSITION = 0
+    }
+
     private val disposables = CompositeDisposable()
     private val _movies = MutableLiveData<ViewState<List<Movie>>>()
     val movies: LiveData<ViewState<List<Movie>>>
         get() = _movies
-    var currentVisiblePosition = 0
+    var currentVisiblePosition = MIN_LIST_POSITION
+    var progressStatus = MIN_PROGRESS
 
     init {
         getMovies()
@@ -31,6 +38,8 @@ class HomeViewModel @Inject constructor(
 
     override fun onCleared() {
         disposables.clear()
+        currentVisiblePosition = MIN_LIST_POSITION
+        progressStatus = MIN_PROGRESS
         super.onCleared()
     }
 
@@ -38,8 +47,8 @@ class HomeViewModel @Inject constructor(
         disposables.add(repository.getMovies()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { _movies.postValue(ViewState.Loading()) }
-            .delay(300, TimeUnit.MILLISECONDS)
+            .doOnSubscribe { onLoading() }
+            .delay(DELAY, TimeUnit.MILLISECONDS)
             .subscribe({ onSuccess(it) }, { t -> onError(t) })
         )
     }
@@ -50,11 +59,16 @@ class HomeViewModel @Inject constructor(
                 repository.searchMovies(query)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe { _movies.postValue(ViewState.Loading()) }
+                    .doOnSubscribe { onLoading() }
                     .doOnSuccess { if (it.isEmpty()) throw NoResultsException() }
-                    .delay(300, TimeUnit.MILLISECONDS)
+                    .delay(DELAY, TimeUnit.MILLISECONDS)
                     .subscribe({ onSuccess(it) }, { t -> onError(t) })
             )
+    }
+
+    private fun onLoading() {
+        _movies.postValue(ViewState.Loading())
+        progressStatus = MIN_PROGRESS
     }
 
     private fun onSuccess(movies: List<Movie>) {

@@ -42,7 +42,8 @@
             android:layout_width="match_parent"
             android:layout_height="6dp"
             android:background="@color/colorAccentDark"
-            android:progress="0"
+            android:max="100"
+            android:progress="1"
             android:progressTint="@color/colorAccent"
             android:secondaryProgressTint="@color/white"
             android:visibility="gone" />
